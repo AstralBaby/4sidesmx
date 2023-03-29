@@ -16,17 +16,24 @@ import { useTimer } from '@/hooks/useTimer';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 const inter = Inter({ subsets: ['latin'] })
-const COMPLETION_TIME_MS = 1000
+const COMPLETION_TIME_MS = 120000
 
 export default function Home() {
   const { remaining, expired } = useTimer(COMPLETION_TIME_MS)
-  const { register, formState: { errors }, handleSubmit, watch, setValue } = useForm({ resolver: yupResolver(formSchema) })
+  const { register, formState: { errors, isValid }, handleSubmit, watch, setValue, getValues } = useForm({ resolver: yupResolver(formSchema) })
   const { countryStates, isLoading: statesLoading } = useCountryStates(watch("country"))
   const { fetchWeather, weather, isLoading: weatherLoading } = useWeather()
+  const [showResults, setShowResults] = useState<boolean>(false)
 
   useEffect(() => {
     setValue("temperature", weather?.temp_c)
   }, [weather])
+
+  useEffect(() => {
+    if (expired) {
+      handleSubmit(() => setShowResults(true))
+    }
+  }, [expired])
 
 
   return (
@@ -38,7 +45,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className='container-fluid vh-100 bg-secondary' style={{'--bs-bg-opacity': '.1'} as Properties}>
-        <ConfirmationModal show={expired} />
+        <ConfirmationModal show={showResults} values={getValues()} isValid={isValid} />
         <div className='mx-auto my-auto w-25'>
         <Card>
           <Card.Body>
@@ -48,7 +55,7 @@ export default function Home() {
         </Card>
         <Card>
           <Card.Body>
-            <Form onSubmit={handleSubmit(() => {})} noValidate>
+            <Form onSubmit={handleSubmit(() => setShowResults(true))} noValidate>
               <Form.Group className='mb-3'>
                 <Form.Label>Nombre completo</Form.Label>
                 <Form.Control type='text' {...register("fullname")} isInvalid={!!errors.fullname} disabled={expired} />
@@ -107,7 +114,9 @@ export default function Home() {
               <Form.Group className='mb-3'>
                 <Form.Label>Clima</Form.Label>
                 { !weather ? 
-                  <Button className='d-block w-100' variant='outline-secondary' onClick={fetchWeather} disabled={expired}>Compartir Ubicacion</Button> :
+                  <Button className='d-block w-100' variant='outline-secondary' onClick={fetchWeather} disabled={expired}>
+                    { weatherLoading ? <Spinner animation="border" variant="primary" size='sm'/> : "Compartir Ubicacion"}
+                  </Button> :
                   <InputGroup>
                     <InputGroup.Text>
                       <img src={weather.condition.icon} alt={weather.temp_c + "°C"} className='object-fit-none' height={25}/>
@@ -118,7 +127,7 @@ export default function Home() {
                 { errors.temperature && <small className='text-danger'>{ String(errors.temperature.message) }</small>}
               </Form.Group>
               <Button type='submit' className='w-100'>
-                Enviar Formulario
+                Finalizar
               </Button>
             </Form>
           </Card.Body>
