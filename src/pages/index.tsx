@@ -1,12 +1,9 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import { Properties } from 'csstype'
 import { Button, Card, Form, InputGroup, ProgressBar, Spinner } from 'react-bootstrap';
-import countries, { CountryState } from "@/lib/countries"
+import countries from "@/lib/countries"
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { API_TOKEN, Endpoints } from '@/lib/api';
 import { useCountryStates } from '@/hooks/useCountryStates';
 import { useWeather } from '@/hooks/useWeather';
 import { useForm } from 'react-hook-form';
@@ -14,6 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { formSchema } from "@/schemas/formSchema"
 import { useTimer } from '@/hooks/useTimer';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import { useMediaQuery } from 'react-responsive';
 
 const inter = Inter({ subsets: ['latin'] })
 const COMPLETION_TIME_MS = 120000
@@ -24,6 +22,7 @@ export default function Home() {
   const { countryStates, isLoading: statesLoading } = useCountryStates(watch("country"))
   const { fetchWeather, weather, isLoading: weatherLoading } = useWeather()
   const [showResults, setShowResults] = useState<boolean>(false)
+  const isMobile = useMediaQuery({ query: `(max-width: 768px)` });
 
   useEffect(() => {
     setValue("temperature", weather?.temp_c)
@@ -46,7 +45,7 @@ export default function Home() {
       </Head>
       <main className='container-fluid vh-100 bg-secondary' style={{'--bs-bg-opacity': '.1'} as Properties}>
         <ConfirmationModal show={showResults} values={getValues()} isValid={isValid} />
-        <div className='position-absolute top-50 start-50 translate-middle w-25'>
+        <div className={isMobile ? "mt-5 w-100" : "position-absolute start-50 top-50 translate-middle w-25"}>
           <Card className='mb-2'>
             <Card.Body>
               Tiempo Restante

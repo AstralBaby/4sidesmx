@@ -28,7 +28,6 @@ export const useCountryStates = (country: string) => {
     useEffect(() => {
         if (country) {
             setIsLoading(true)
-
             axios.get(Endpoints.GET_COUNTRY_STATES + country, { headers: { Authorization: localStorage.getItem("token") } })
             .then(({ data }) => setCountryStates(data))
             .catch(({ config }) => getOrRefreshToken().then(() => axios(config)))

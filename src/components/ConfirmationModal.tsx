@@ -17,28 +17,27 @@ const ConfirmationModal = (props: ConfirmationModalProps) => {
     >
       <Modal.Header className={props.isValid ? "bg-primary" : "bg-danger"}>
         <Modal.Title id="contained-modal-title-vcenter" className="text-white mx-auto fs-6 fw-bold">
-          Tiempo terminado!
+          Resumen del Formulario
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p className="fs-5">Resumen del formulario: </p>
-        <div className="p-4 bg-light row fs-6">
+        <div className="p-4 bg-light row row-cols-1 row-cols-md-2 fs-6">
             <div className="fw-bold col">Nombre completo:</div>
             <div className="col">{props.values.fullname} </div>
         </div>
-        <div className="p-4 row fs-6">
+        <div className="p-4 row row-cols-1 row-cols-md-2 fs-6">
             <div className="fw-bold col">Fecha de Nacimiento:</div>
             <div className="col">{props.values.birthdate} </div>
         </div>
-        <div className="p-4 bg-light row fs-6">
+        <div className="p-4 bg-light row row-cols-1 row-cols-md-2 fs-6">
             <div className="fw-bold col">Pais: </div>
             <div className="col">{props.values.country} </div>
         </div>
-        <div className="p-4 row fs-6">
+        <div className="p-4 row row-cols-1 row-cols-md-2 fs-6">
             <div className="fw-bold col">Provincia: </div>
             <div className="col">{props.values.state} </div>
         </div>
-        <div className="p-4 bg-light row fs-6">
+        <div className="p-4 bg-light row row-cols-1 row-cols-md-2 fs-6">
             <div className="fw-bold col">Correo Electronico: </div>
             <div className="col">{props.values.email} </div>
         </div>

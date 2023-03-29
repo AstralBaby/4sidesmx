@@ -26,8 +26,8 @@ export const useWeather = () => {
     useEffect(() => {
         if (location) {
             setIsLoading(true)
-            
             const params = `&q=${location.latitude},${location.longitude}`
+            
             axios.get(Endpoints.GET_WEATHER_BY_COORDS + params)
             .then(({ data }) => setWeather(data.current))
             .finally(() => setIsLoading(false))
